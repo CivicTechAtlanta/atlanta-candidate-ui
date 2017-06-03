@@ -1,17 +1,22 @@
 <template>
   <div>
+    <Offices></Offices>
   </div>
 </template>
 
 <script>
-export default {
-  data () {
-    return {
-      msg: 'Welcome to Your Vue.js App'
+  import Offices from './Offices.vue';
+  export default {
+    data () {
+      return {
+        msg: 'Welcome to Your Vue.js App'
+      }
+    },
+    components: {
+      Offices
     }
   }
-}
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 </style>
