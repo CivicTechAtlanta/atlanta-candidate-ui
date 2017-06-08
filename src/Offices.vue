@@ -8,14 +8,13 @@
       <option v-for="district in 12" v-bind:value="district">District {{ district }}</option>
     </select><br>
     <input
-      disabled
       type="text"
       id="address"
       v-model="address"
       placeholder="Your address">
-    <button disabled>Submit!</button>
+    <button @click="findDistrict()">Submit!</button>
     <div v-for="office in filteredOffices" @click="viewOffice(office.office.name)">{{ office.office.name }}</div>
-    <Office :office="office"></Office>
+    <!-- <Office :office="office"></Office> -->
   </div>
 </template>
 
@@ -25,6 +24,7 @@
   export default {
     data () {
       return {
+        baseURL: 'http://localhost:3000',
         offices: undefined,
         office: undefined,
         district: '',
@@ -49,12 +49,22 @@
         this.office = office;
       },
       getOffices() {
-        axios.get('http://localhost:3000/api/candidates').then(resp => {
+        axios.get(`${this.baseURL}/api/candidates`).then(resp => {
           this.offices = resp.data.offices;
         })
         .catch(error => {
           console.log(error); // TODO
         });
+      },
+      findDistrict() {
+        axios.get(`${this.baseURL}/api/candidates/?address=${this.address}`).then(resp => {
+          this.district = resp.data.district_id;
+          this.offices = resp.data.offices;
+        })
+        .catch(error => {
+          console.log(error); // TODO
+        });
+        // TODO: also need an error if the data returned is an empty array, e.g. `{district_id: null, offices: []}`
       }
     },
     beforeMount() {
