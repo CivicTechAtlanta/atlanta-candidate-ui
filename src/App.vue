@@ -1,19 +1,15 @@
 <template>
   <div>
-    <Offices></Offices>
+    <router-view></router-view>
   </div>
 </template>
 
 <script>
-  import Offices from './Offices.vue';
   export default {
     data () {
       return {
         msg: 'Welcome to Your Vue.js App'
       }
-    },
-    components: {
-      Offices
     }
   }
 </script>

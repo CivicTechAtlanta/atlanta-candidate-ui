@@ -14,6 +14,7 @@ npm install
 npm run dev
 
 # build for production with minification
+[change all 'baseURL's to prod]
 npm run build
 ```
 
