@@ -1,31 +1,46 @@
 <template>
-  <div>
-    <select
-      id="district"
+  <div class="container">
+    <v-select
+      v-bind:items="districts"
       v-model="district"
-      placeholder="View all">
-      <option @click="district = ''" value=''>View all</option>
-      <option v-for="district in 12" v-bind:value="district">District {{ district }}</option>
+      label="Select your district">
       <!-- TODO: implement route change on option select -->
-    </select><br>
-    Or find your district:&nbsp;
-    <input
-      type="text"
-      id="address"
-      v-model="address"
-      placeholder="Your address">
-    <button @click="findDistrict()">Submit!</button>
-    <div v-for="office in filteredOffices" @click="viewOffice(office.office.name)">
-      <router-link :to="`/office/${office.office.name}`">
-        {{ office.office.name }}
-      </router-link>
-    </div>
+    </v-select><br>
+    <v-layout row wrap>
+      <v-flex xs12 sm3>
+        <p>Or find your district:</p>
+      </v-flex>
+      <v-flex xs12 sm6>
+        <v-text-field
+          id="address"
+          v-model="address"
+          label="Your address">
+        </v-text-field>
+      </v-flex>
+      <v-flex xs12 sm3>
+        <v-btn primary light v-on:click.native="findDistrict()">Submit!</v-btn>
+      </v-flex>
+    </v-layout>
+    <v-list>
+      <v-list-item v-for="office in filteredOffices" @click="viewOffice(office.office.name)">
+        <router-link :to="`/office/${office.office.name}`">
+          <v-list-tile>
+            <v-list-tile-content>
+              <v-list-tile-title>
+                {{ office.office.name }}
+              </v-list-tile-title>
+            </v-list-tile-content>
+          </v-list-tile>
+        </router-link>
+      </v-list-item>
+    </v-list>
   </div>
 </template>
 
 <script>
   import Office from './Office.vue';
   import axios from 'axios';
+  import range from 'lodash/range';
 
   export default {
     data () {
@@ -33,6 +48,7 @@
         baseURL: 'https://atlanta-candidate-api.herokuapp.com',
         offices: undefined,
         office: undefined,
+        districts: ['View all', ...range(1, 13)],
         district: '',
         address: ''
       }
@@ -76,6 +92,7 @@
       }
     },
     beforeMount() {
+      // TODO: implement route change if district is stored in state
       this.getOffices();
     },
     components: {
@@ -83,3 +100,10 @@
     }
   }
 </script>
+
+<style scoped>
+  .container {
+    width: 700px;
+    max-width: 700px;
+  }
+</style>

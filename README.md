@@ -15,6 +15,7 @@ npm run dev
 
 # build for production with minification
 [change all 'baseURL's to prod]
+[make sure index.html points to '"dist/build.js"']
 npm run build
 ```
 
