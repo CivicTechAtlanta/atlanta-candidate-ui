@@ -1,11 +1,15 @@
 <template>
   <div class="container">
-    <v-select
-      v-bind:items="districts"
-      v-model="district"
-      label="Select your district">
-      <!-- TODO: implement route change on option select -->
-    </v-select><br>
+    Select your district: 
+    <router-link
+      :to="`/`">
+      <v-btn secondary>View all</v-btn>
+    </router-link>
+    <router-link
+      v-for="district in this.districts" :key="district"
+      :to="`/district/${district}`">
+      <v-btn secondary>{{ district }}</v-btn>
+    </router-link>
     <v-layout row wrap>
       <v-flex xs12 sm3>
         <p>Or find your district:</p>
@@ -19,15 +23,16 @@
       </v-flex>
       <v-flex xs12 sm3>
         <v-btn primary light v-on:click.native="findDistrict()">Submit!</v-btn>
+        <!-- FIXME: hitting enter should submit -->
       </v-flex>
     </v-layout>
     <v-list>
-      <v-list-item v-for="office in filteredOffices" @click="viewOffice(office.office.name)">
-        <router-link :to="`/office/${office.office.name}`">
+      <v-list-item v-for="office in this.offices" :key="office.name" @click="viewOffice(office.name)">
+        <router-link :to="`/office/${office.slug}`">
           <v-list-tile>
             <v-list-tile-content>
               <v-list-tile-title>
-                {{ office.office.name }}
+                {{ office.name }}
               </v-list-tile-title>
             </v-list-tile-content>
           </v-list-tile>
@@ -46,33 +51,27 @@
     data () {
       return {
         baseURL: 'https://atlanta-candidate-api.herokuapp.com',
+        // baseURL: 'http://localhost:3000',
         offices: undefined,
         office: undefined,
-        districts: ['View all', ...range(1, 13)],
-        district: '',
+        districts: [...range(1, 13)],
+        district: this.$route.params.id,
         address: ''
       }
     },
-    computed: {
-      filteredOffices() {
-        if (this.district > 0) {
-          for (var office of this.offices) {
-            // TODO: instead of this, use https://atlanta-candidate-api.herokuapp.com/api/candidates/?address=1234 Terminus Rd, Atlanta GA&citywide=true
-            if (office.office.name === `City Council District ${this.district}`) {
-              return [office];
-            }
-          }
-        } else {
-          return this.offices;
-        }
+    watch: {
+      '$route'(to, from) {
+        this.district = to.params.id;
+        this.getOffices(this.district);
       }
     },
     methods: {
       viewOffice(office) {
         this.office = office;
       },
-      getOffices() {
-        axios.get(`${this.baseURL}/api/candidates`).then(resp => {
+      getOffices(district) {
+        let url = parseInt(district) ? `${this.baseURL}/api/v1/offices/?district_id=${district}&citywide=true` : `${this.baseURL}/api/v1/offices`;
+        axios.get(url).then(resp => {
           this.offices = resp.data.offices;
         })
         .catch(error => {
@@ -80,10 +79,8 @@
         });
       },
       findDistrict() {
-        // TODO: implement route change once district is found
-        axios.get(`${this.baseURL}/api/candidates/?address=${this.address}`).then(resp => {
-          this.district = resp.data.district_id;
-          this.offices = resp.data.offices;
+        axios.get(`${this.baseURL}/api/v1/districts/?address=${this.address}`).then(resp => {
+          this.$router.replace(`/district/${resp.data.district_id}`);
         })
         .catch(error => {
           console.log(error); // TODO
@@ -92,8 +89,7 @@
       }
     },
     beforeMount() {
-      // TODO: implement route change if district is stored in state
-      this.getOffices();
+      this.getOffices(this.district);
     },
     components: {
       Office

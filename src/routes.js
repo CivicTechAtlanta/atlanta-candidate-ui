@@ -1,5 +1,6 @@
-import Offices from './Offices.vue'; // TODO: is this needed now?
+import Offices from './Offices.vue';
 import Office from './Office.vue';
+import Candidate from './Candidate.vue';
 
 export const routes = [
   {
@@ -11,8 +12,8 @@ export const routes = [
   },{
     path: '/office/:office',
     component: Office
-  // },{
-  //   path: '/office/:office/:candidate',
-  //   component: Candidate
+  },{
+    path: '/candidate/:office/:id',
+    component: Candidate
   }
 ];

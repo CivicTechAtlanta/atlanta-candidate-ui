@@ -7,7 +7,7 @@
     </v-breadcrumbs>
     <v-list>
       <v-list-item v-for="candidate in candidates" :key="candidate">
-        <router-link :to="`/office/${office}/${candidate.first_name} ${candidate.last_name}`">
+        <router-link :to="`/candidate/${officeSlug}/${candidate.id}`">
           <v-list-tile>
             <v-list-tile-content>
               <v-list-tile-title>
@@ -28,33 +28,32 @@
     data() {
       return {
         baseURL: 'https://atlanta-candidate-api.herokuapp.com',
-        office: this.$route.params.office,
-        officeID: this.$route.params.office.split(" ").slice(-1)[0],
+        // baseURL: 'http://localhost:3000',
+        officeSlug: this.$route.params.office,
+        officeName: undefined,
         candidates: undefined,
-        breadcrumbs: this.createBreadcrumbs()
+        breadcrumbs: undefined
       }
     },
     watch: {
       '$route'(to, from) {
-        this.office = to.params.office;
-        this.officeID = this.office.split(" ").slice(-1)[0]
+        this.officeSlug = to.params.office;
       }
     },
     methods: {
       createBreadcrumbs() {
-        let office = this.$route.params.office;
-        let district = typeof(parseInt(office)) === 'number' ? `District ${office}` : office;
         return [{
           href: '/',
           text: 'Offices'
         },{
-          text: district
+          text: this.officeName
         }];
       },
       getCandidates() {
-        console.log(this.office);
-        axios.get(`${this.baseURL}/api/districts/${this.officeID}`).then(resp => {
+        axios.get(`${this.baseURL}/api/v1/offices/${this.officeSlug}`).then(resp => {
           this.candidates = resp.data.candidates;
+          this.officeName = resp.data.name;
+          this.breadcrumbs = this.createBreadcrumbs();
         })
         .catch(error => {
           console.log(error); // TODO
