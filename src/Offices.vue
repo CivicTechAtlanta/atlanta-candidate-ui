@@ -25,7 +25,7 @@
         </form>
       </v-flex>
     </v-layout>
-    <v-listg>
+    <v-list>
       <v-list-item v-for="office in this.offices" :key="office.name" @click="viewOffice(office.name)">
         <router-link :to="`/office/${office.slug}`">
           <v-list-tile>
@@ -37,7 +37,7 @@
           </v-list-tile>
         </router-link>
       </v-list-item>
-      </v-list>
+    </v-list>
   </div>
 </template>
 
