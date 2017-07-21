@@ -22,46 +22,46 @@
 </template>
 
 <script>
-  import axios from 'axios';
+import axios from 'axios';
 
-  export default {
-    data() {
-      return {
-        baseURL: 'https://atlanta-candidate-api.herokuapp.com',
-        // baseURL: 'http://localhost:3000',
-        officeSlug: this.$route.params.office,
-        officeName: undefined,
-        candidates: undefined,
-        breadcrumbs: undefined
-      }
+export default {
+  data() {
+    return {
+      baseURL: 'https://atlanta-candidate-api.herokuapp.com',
+      // baseURL: 'http://localhost:3000',
+      officeSlug: this.$route.params.office,
+      officeName: undefined,
+      candidates: undefined,
+      breadcrumbs: undefined
+    }
+  },
+  watch: {
+    '$route'(to, from) {
+      this.officeSlug = to.params.office;
+    }
+  },
+  methods: {
+    createBreadcrumbs() {
+      return [{
+        href: '/',
+        text: 'Offices'
+      }, {
+        text: this.officeName
+      }];
     },
-    watch: {
-      '$route'(to, from) {
-        this.officeSlug = to.params.office;
-      }
-    },
-    methods: {
-      createBreadcrumbs() {
-        return [{
-          href: '/',
-          text: 'Offices'
-        },{
-          text: this.officeName
-        }];
-      },
-      getCandidates() {
-        axios.get(`${this.baseURL}/api/v1/offices/${this.officeSlug}`).then(resp => {
-          this.candidates = resp.data.candidates;
-          this.officeName = resp.data.name;
-          this.breadcrumbs = this.createBreadcrumbs();
-        })
+    getCandidates() {
+      axios.get(`${this.baseURL}/api/v1/offices/${this.officeSlug}`).then(resp => {
+        this.candidates = resp.data.candidates.filter(person => !person.is_dropped_out);
+        this.officeName = resp.data.name;
+        this.breadcrumbs = this.createBreadcrumbs();
+      })
         .catch(error => {
           console.log(error); // TODO
         });
-      }
-    },
-    beforeMount() {
-      this.getCandidates();
     }
+  },
+  beforeMount() {
+    this.getCandidates();
   }
+}
 </script>
