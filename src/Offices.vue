@@ -33,7 +33,6 @@
         </v-layout>
       </v-container>
     </v-layout>
-    </v-layout>
     <v-list v-if="offices">
       <v-list-item v-for="office in this.offices" :key="office.name" @click="viewOffice(office.name)">
         <router-link :to="`/office/${office.slug}`">
