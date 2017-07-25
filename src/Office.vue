@@ -27,8 +27,8 @@ import axios from 'axios';
 export default {
   data() {
     return {
-      baseURL: 'https://atlanta-candidate-api.herokuapp.com',
-      // baseURL: 'http://localhost:3000',
+      // baseURL: 'https://atlanta-candidate-api.herokuapp.com',
+      baseURL: 'http://localhost:3000',
       officeSlug: this.$route.params.office,
       officeName: undefined,
       candidates: undefined,
