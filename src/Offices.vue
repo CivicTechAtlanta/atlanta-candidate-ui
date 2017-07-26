@@ -16,9 +16,7 @@
       </v-card-text>
       <v-layout row wrap>
         <v-flex xs12 sm4 class="py-2">
-          <v-card-actions>
-            <v-btn class="green white--text text--darken-2 ml-3" large @click.native="showAddressSearchCard">Find Your District</v-btn>
-          </v-card-actions>
+          <v-btn class="green white--text text--darken-2 ml-3" large @click.native="showAddressSearchCard">Find Your District</v-btn>
         </v-flex>
         <v-flex xs12 sm4 class="">
           <v-select v-bind:items="districts" label="Select a District" item-value="districts" v-model="selectedDistrict" @input="getOffices(selectedDistrict)">
@@ -30,8 +28,8 @@
     <!-- Find Address  -->
     <div v-if="showAddressSearch">
       <!-- <v-layout row justify-center>
-                            <h4 class="mt-3">Or Find Your District</h4>
-                          </v-layout> -->
+                  <h4 class="mt-3">Or Find Your District</h4>
+               </v-layout> -->
       <v-layout row>
         <v-container>
           <v-layout row>
