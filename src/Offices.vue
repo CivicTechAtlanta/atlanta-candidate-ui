@@ -43,7 +43,9 @@
           <v-card class="my-3">
             <v-card-title primary-title class="blue darken-4 white--text">
               <div class="headline">
-                {{ office.name }}
+                <router-link :to="`/office/${office.slug}`">
+                  {{ office.name }}
+                </router-link>
               </div>
             </v-card-title>
             <v-card-text>
@@ -122,12 +124,18 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .container {
   max-width: 980px;
 }
 .district-select {
   max-width: 400px;
   margin: 0 auto;
+}
+.headline {
+  a {
+    color: white;
+    text-decoration: none;
+  }
 }
 </style>

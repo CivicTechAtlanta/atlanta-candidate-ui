@@ -5,19 +5,23 @@
         {{ crumb.text }}
       </v-breadcrumbs-item>
     </v-breadcrumbs>
-    <v-list>
-      <v-list-item v-for="candidate in candidates" :key="candidate">
-        <router-link :to="`/candidate/${officeSlug}/${candidate.id}`">
-          <v-list-tile>
-            <v-list-tile-content>
-              <v-list-tile-title>
+    <v-layout row wrap class="ma-2">
+      <v-flex xs12 sm6 md4 v-for="candidate in candidates" :key="candidate">
+        <v-card class="my-3"
+        >
+          <v-card-title primary-title class="blue darken-4 white--text">
+            <div class="headline">
+              <router-link :to="`/candidate/${officeSlug}/${candidate.id}`">
                 {{ candidate.first_name }} {{ candidate.last_name }}
-              </v-list-tile-title>
-            </v-list-tile-content>
-          </v-list-tile>
-        </router-link>
-      </v-list-item>
-    </v-list>
+              </router-link>
+            </div>
+          </v-card-title>
+          <v-card-text>
+            Information coming soon.
+          </v-card-text>
+        </v-card>
+      </v-flex>
+    </v-layout>
   </div>
 </template>
 
@@ -65,3 +69,12 @@ export default {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.headline {
+  a {
+    color: white;
+    text-decoration: none;
+  }
+}
+</style>
