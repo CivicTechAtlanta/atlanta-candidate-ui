@@ -13,39 +13,29 @@
             Find information about upcoming elections for the city of Atlanta
           </h5>
         </div>
-      </v-card-text>
-      <v-layout row wrap>
-        <v-flex xs12 sm4 class="py-2">
-          <v-btn class="green white--text text--darken-2 ml-3" large @click.native="showAddressSearchCard">Find Your District</v-btn>
-        </v-flex>
-        <v-flex xs12 sm4 class="">
-          <v-select v-bind:items="districts" label="Select a District" item-value="districts" v-model="selectedDistrict" @input="getOffices(selectedDistrict)">
+
+        <v-layout row wrap>
+          <v-select class="district-select" v-bind:items="districts" label="Select a District" item-value="districts" v-model="selectedDistrict" @input="getOffices(selectedDistrict)">
           </v-select>
-        </v-flex>
-      </v-layout>
+        </v-layout>
+
+        <v-layout row>
+          OR
+        </v-layout>
+
+        <v-layout row>
+          <v-flex xs12>
+            <form block @submit.prevent>
+              <v-layout row base-align justify-center>
+                <v-text-field id="address" v-model="address" label="Your address">
+                </v-text-field>
+                <v-btn primary light type="submit" v-on:click.native="findDistrict()">Find your district</v-btn>
+              </v-layout>
+            </form>
+          </v-flex>
+        </v-layout>
+      </v-card-text>
     </v-card>
-  
-    <!-- Find Address  -->
-    <div v-if="showAddressSearch">
-      <!-- <v-layout row justify-center>
-                  <h4 class="mt-3">Or Find Your District</h4>
-               </v-layout> -->
-      <v-layout row>
-        <v-container>
-          <v-layout row>
-            <v-flex xs12>
-              <form block @submit.prevent>
-                <v-layout row base-align justify-center>
-                  <v-text-field id="address" v-model="address" label="Your address">
-                  </v-text-field>
-                  <v-btn primary light type="submit" v-on:click.native="findDistrict()">Submit!</v-btn>
-                </v-layout>
-              </form>
-            </v-flex>
-          </v-layout>
-        </v-container>
-      </v-layout>
-    </div>
   
     <div v-if="selectedDistrict">
       <v-layout row wrap>
@@ -88,8 +78,7 @@ export default {
       districts: [...range(1, 13)],
       district: this.$route.params.id,
       address: '',
-      selectedDistrict: undefined,
-      showAddressSearch: false
+      selectedDistrict: undefined
     }
   },
   watch: {
@@ -105,7 +94,6 @@ export default {
     getOffices(district) {
       let url = parseInt(district) ? `${this.baseURL}/api/v1/offices/?district_id=${district}&citywide=true` : `${this.baseURL}/api/v1/offices`;
       axios.get(url).then(resp => {
-        console.log(resp);
         this.offices = resp.data.offices;
       })
         .catch(error => {
@@ -123,10 +111,6 @@ export default {
       });
       // TODO: also need an error if the data returned is an empty array, e.g. `{district_id: null, offices: []}`
       this.address = ''; // reset address field
-    },
-    showAddressSearchCard() {
-      this.showAddressSearch = !this.showAddressSearch;
-      this.showIntroCard = false;
     }
   },
   beforeMount() {
@@ -141,5 +125,9 @@ export default {
 <style scoped>
 .container {
   max-width: 980px;
+}
+.district-select {
+  max-width: 400px;
+  margin: 0 auto;
 }
 </style>
