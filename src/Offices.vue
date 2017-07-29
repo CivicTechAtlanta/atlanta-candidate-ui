@@ -1,6 +1,5 @@
 <template>
   <div class="container">
-  
     <v-card class="grey lighten-4 grey--text text--darken-4">
       <v-card-title primary-title>
         <div class="headline">
@@ -15,7 +14,7 @@
         </div>
 
         <v-layout row wrap>
-          <v-select class="district-select" v-bind:items="districts" label="Select a District" item-value="districts" v-model="selectedDistrict" @input="getOffices(selectedDistrict)">
+          <v-select class="district-select" v-bind:items="districts" label="Select a District" item-value="districts" v-model="district" @input="getOffices(district)">
           </v-select>
         </v-layout>
 
@@ -36,8 +35,10 @@
         </v-layout>
       </v-card-text>
     </v-card>
-  
-    <div v-if="selectedDistrict">
+
+    <div class="headline mt-4" v-if="district">Elections for District {{ district }} constituents:</div>
+
+    <div v-if="district">
       <v-layout row wrap>
         <v-flex xs12 sm6 md4 v-for="office in this.offices" :key="office.name" @click="viewOffice(office.name)">
           <v-card class="my-3">
@@ -61,14 +62,13 @@
         </v-flex>
       </v-layout>
     </div>
-  
   </div>
 </template>
 
 <script>
 import Office from './Office.vue';
-import axios from 'axios';
 import range from 'lodash/range';
+import axios from 'axios';
 
 export default {
   data() {
@@ -78,36 +78,35 @@ export default {
       offices: undefined,
       office: undefined,
       districts: [...range(1, 13)],
-      district: this.$route.params.id,
-      address: '',
-      selectedDistrict: undefined
+      district: this.$store.state.districtID,
+      address: ''
     }
   },
   watch: {
     '$route'(to, from) {
-      this.district = to.params.id;
-      this.getOffices(this.district);
+      this.setDistrict(to.params.id);
     }
   },
   methods: {
     viewOffice(office) {
       this.office = office;
     },
+    setDistrict(district) {
+      this.$store.commit('setDistrict', district);
+      this.district = this.$store.state.districtID;
+      this.getOffices(this.district);
+    },
     getOffices(district) {
-      let url = parseInt(district) ? `${this.baseURL}/api/v1/offices/?district_id=${district}&citywide=true` : `${this.baseURL}/api/v1/offices`;
-      axios.get(url).then(resp => {
-        this.offices = resp.data.offices;
-      })
-        .catch(error => {
-          console.log(error); // TODO
-        });
+      // TODO: loading spinner begins
+      this.$store.dispatch('getOfficesForDistrict').then(() => {
+        // TODO: loading spinner ends
+        this.offices = this.$store.state.offices;
+        this.$router.replace(`/district/${district}`);
+      });
     },
     findDistrict() {
       axios.get(`${this.baseURL}/api/v1/districts/?address=${this.address}`).then(resp => {
-        var id = resp.data.search_result.district_id;
-        this.$router.replace(`/district/${id}`);
-        this.selectedDistrict = id;
-        this.showAddressSearch = false; // reset in case the search bar was used
+        this.setDistrict(resp.data.search_result.district_id);
       }).catch(error => {
         console.log(error); // TODO
       });
@@ -116,7 +115,9 @@ export default {
     }
   },
   beforeMount() {
-    this.getOffices(this.district);
+    if (this.$route.params.id) {
+      this.setDistrict(this.$route.params.id);
+    }
   },
   components: {
     Office
