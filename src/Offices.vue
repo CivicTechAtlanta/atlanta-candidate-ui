@@ -104,8 +104,8 @@ export default {
     },
     findDistrict() {
       axios.get(`${this.baseURL}/api/v1/districts/?address=${this.address}`).then(resp => {
-        var id = resp.data.district_id;
-        this.$router.replace(`/district/${resp.data.district_id}`);
+        var id = resp.data.search_result.district_id;
+        this.$router.replace(`/district/${id}`);
         this.selectedDistrict = id;
         this.showAddressSearch = false; // reset in case the search bar was used
       }).catch(error => {
