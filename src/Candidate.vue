@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-breadcrumbs icons divider="chevron_right">
-      <v-breadcrumbs-item v-for="crumb in breadcrumbs" :key="crumb" :href="crumb.href" router>
+      <v-breadcrumbs-item v-for="(crumb, index) in breadcrumbs" :key="index" :href="crumb.href" router>
         {{ crumb.text }}
       </v-breadcrumbs-item>
     </v-breadcrumbs>
@@ -19,6 +19,7 @@ export default {
       baseURL: 'http://localhost:3000',
       candidateID: this.$route.params.id,
       officeSlug: this.$route.params.office,
+      officeName: '',
       candidateInfo: {},
       breadcrumbs: undefined
     }
@@ -30,8 +31,7 @@ export default {
         text: 'Offices'
       }, {
         href: `/office/${this.officeSlug}`,
-        text: this.officeSlug
-        // TODO: use office name for text
+        text: this.officeName || this.officeSlug
       }, {
         text: `${this.candidateInfo.first_name} ${this.candidateInfo.last_name}`
       }]
@@ -47,7 +47,11 @@ export default {
     }
   },
   beforeMount() {
-    this.getCandidateInfo();
+    this.$store.dispatch('getAllOffices')
+    .then(() => {
+      this.officeName = this.$store.getters.getOfficeName(this.officeSlug);
+      this.getCandidateInfo();
+    });
   }
 }
 </script>

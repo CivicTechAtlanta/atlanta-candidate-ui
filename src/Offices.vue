@@ -115,6 +115,7 @@ export default {
     }
   },
   beforeMount() {
+    this.$store.dispatch('getAllOffices');
     if (this.$route.params.id) {
       this.setDistrict(this.$route.params.id);
     }
