@@ -41,7 +41,6 @@ This will serve the frontend at localhost:8080. The server includes hot reload s
 
 ### Build for production with minification
 - Change all `baseURL` variables back to the prod version
-- Make sure index.html points to `dist/build.js`
 - Run the following command from your terminal
 ```bash
 npm run build
