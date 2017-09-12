@@ -41,7 +41,7 @@
     <div v-if="district">
       <v-layout row wrap>
         <v-flex xs12 sm6 md4 v-for="office in this.offices" :key="office.name" @click="viewOffice(office.name)">
-          <v-card class="my-3">
+          <v-card class="ma-2">
             <v-card-title primary-title class="blue darken-4 white--text">
               <div class="headline">
                 <router-link :to="`/office/${office.slug}`">
@@ -53,7 +53,7 @@
               <ul>
                 <li v-for="candidate in office.candidates" :key="candidate.id">
                   <router-link :to="`/candidate/${office.slug}/${candidate.id}`">
-                    {{candidate.first_name + ' ' + candidate.last_name}}
+                    {{candidate.full_name}}
                   </router-link>
                 </li>
               </ul>
@@ -68,6 +68,7 @@
 <script>
 import Office from './Office.vue';
 import range from 'lodash/range';
+import sortBy from 'lodash/sortBy';
 import axios from 'axios';
 
 export default {
@@ -101,6 +102,9 @@ export default {
       this.$store.dispatch('getOfficesForDistrict').then(() => {
         // TODO: loading spinner ends
         this.offices = this.$store.state.offices;
+        for (let office of this.offices) {
+          office.candidates = sortBy(office.candidates, ['last_name']);
+        }
         this.$router.replace(`/district/${district}`);
       });
     },

@@ -5,14 +5,22 @@
         {{ crumb.text }}
       </v-breadcrumbs-item>
     </v-breadcrumbs>
-    <h1>{{ this.candidateInfo.first_name }} {{ this.candidateInfo.last_name}}</h1>
+    <CandidateSummary
+      v-bind:candidate="candidateInfo"
+      v-bind:office-name="officeName">
+    </CandidateSummary>
   </div>
 </template>
 
 <script>
 import axios from 'axios';
 
+import CandidateSummary from './CandidateSummary.vue';
+
 export default {
+  components: {
+    CandidateSummary
+  },
   data() {
     return {
       // baseURL: 'https://atlanta-candidate-api.herokuapp.com',
@@ -33,7 +41,7 @@ export default {
         href: `/office/${this.officeSlug}`,
         text: this.officeName || this.officeSlug
       }, {
-        text: `${this.candidateInfo.first_name} ${this.candidateInfo.last_name}`
+        text: `${this.candidateInfo.full_name}`
       }]
     },
     getCandidateInfo() {
